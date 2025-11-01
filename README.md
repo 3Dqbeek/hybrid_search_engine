@@ -272,11 +272,11 @@ curl -X POST "http://localhost:8005/search" \
 
 ## 📄 Лицензия
 
-[Укажите лицензию]
+MIT Lisense
 
-## 👥 Авторы
+## 👥 Автор
 
-[Укажите авторов]
+Vasiliy Dautov
 
 ## 🙏 Благодарности
 
