@@ -1,0 +1,74 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log
+logs/
+
+# Docker
+.dockerignore
+
+# Data
+data/*.sql
+*.db
+*.sqlite
+
+# Models (большие файлы)
+models/
+*.pkl
+*.h5
+*.pt
+*.pth
+
+# Elasticsearch
+elasticsearch_data/
+*.es_backup
+
+# PostgreSQL
+postgres_data/
+*.pg_dump
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+

@@ -1,0 +1,74 @@
+version: '3.3'
+
+services:
+  elasticsearch:
+    image: elasticsearch:8.11.0
+    container_name: search_test_elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9201:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - search_network
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: search_test_postgres
+    environment:
+      - POSTGRES_DB=search_test
+      - POSTGRES_USER=search_user
+      - POSTGRES_PASSWORD=search_password
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./data/init_realistic.sql:/docker-entrypoint-initdb.d/init_realistic.sql
+    networks:
+      - search_network
+
+  api:
+    build: .
+    container_name: search_test_api
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8005:8000"
+    environment:
+      - DATABASE_URL=postgresql://search_user:search_password@postgres:5432/search_test
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - LLM_URL=http://host.docker.internal:1234
+    volumes:
+      - ./app:/app/app
+      - ./requirements.txt:/app/requirements.txt
+      - ../models:/models
+    depends_on:
+      - postgres
+      - elasticsearch
+    networks:
+      - search_network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  ui:
+    build: .
+    container_name: search_test_ui
+    ports:
+      - "8503:8501"
+    command: streamlit run ui/simple_search_ui.py --server.port 8501 --server.address 0.0.0.0
+    environment:
+      - API_BASE_URL=http://api:8000
+    depends_on:
+      - api
+    networks:
+      - search_network
+
+volumes:
+  postgres_data:
+  elasticsearch_data:
+
+networks:
+  search_network:
+    driver: bridge
